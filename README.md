@@ -20,25 +20,41 @@ for installing all the dependencies, use requirement file with following command
 
 To create environment for application, use following commands
 
-    docker run --device /dev/video0 -it opencv_cpp 
+    docker run --device /dev/video0 -it --net=host --name cam_surv opencv_cpp 
 
 Note : flag -it in above command is for interactive shell (use as per your preference)
 
 Copy essential files to docker container from git repo
 
-    docker cp CMakeLists.txt  <container_id>:/CodeSpace/CMakeLists.txt
-    docker cp main.cpp <container_id>:/CodeSpace/main.cpp
+    docker cp <filename>  <container_id>:/CodeSpace/<filename>
+
+    filename can be main.cpp, client.cpp, server.cpp, installation.sh
 
 # Usage
+
+Install the dependencies
+
+    bash installation.sh
 
 Use following commands for making project binary
 
     cmake .
     make
 
-Now, you can use CamSurveillance binary for execution.
+For running in centralized setting (i.e., without server-client)
 
-    ./CamSurveillance
+    ./centralized
+
+For server-client architecture
+
+Use pre-build binary to host rtsp server
+
+    ./gst-rtsp-server-1.4.0/examples/test-launch "( udpsrc port=5000 caps=\"application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264\" ! rtph264depay ! rtph264pay name=pay0 )
+
+Then server and client binary for their respective usage
+
+    ./server
+    ./client
 
 # Authors
 
